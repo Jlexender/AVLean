@@ -1,0 +1,10 @@
+name = "AVLean"
+version = "0.1.0"
+defaultTargets = ["avlean"]
+
+[[lean_lib]]
+name = "AVLean"
+
+[[lean_exe]]
+name = "avlean"
+root = "Main"
