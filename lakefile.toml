@@ -1,7 +1,12 @@
-name = "AVLean"
+name = "avlean"
 version = "0.1.0"
 defaultTargets = ["avlean"]
+lintDriver = "batteries/runLinter"
 
 [[lean_lib]]
-name = "AVLean"
+name = "avlean"
 
+[[require]]
+name = "batteries"
+scope = "leanprover-community"
+rev = "main"

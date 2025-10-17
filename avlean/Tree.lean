@@ -1,4 +1,5 @@
 
+
 inductive BinaryTree (α : Type)
   | leaf : BinaryTree α
   | node (left : BinaryTree α) (right : BinaryTree α)
@@ -13,5 +14,3 @@ def isBalanced (tree : BinaryTree α) : Bool :=
   match tree with
   | .leaf => true
   | .node l r => Int.natAbs (depth l - depth r) <= 1
-
-
