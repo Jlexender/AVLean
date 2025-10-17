@@ -18,7 +18,7 @@ def depth (tree : BinaryTree α) : Nat :=
 
 
 /--
-  By definition, a binary tree is balancedif the height of
+  By definition, a binary tree is balanced if the height of
   the left and right subtrees of any node differ by at most 1.
 -/
 def isBalanced (tree : BinaryTree α) : Bool :=
