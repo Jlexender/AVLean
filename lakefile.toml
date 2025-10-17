@@ -5,6 +5,3 @@ defaultTargets = ["avlean"]
 [[lean_lib]]
 name = "AVLean"
 
-[[lean_exe]]
-name = "avlean"
-root = "Main"
