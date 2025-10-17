@@ -1,4 +1,4 @@
-# AVLean
+# avlean
 
 Источники (sources):
 
