@@ -11,5 +11,5 @@
    "inputRev": "main",
    "inherited": false,
    "configFile": "lakefile.toml"}],
- "name": "avlean",
+ "name": "avltree",
  "lakeDir": ".lake"}

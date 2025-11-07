@@ -1,4 +1,4 @@
-# avlean
+# avltree-lean
 
 Источники (sources):
 
