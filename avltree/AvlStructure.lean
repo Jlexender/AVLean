@@ -53,11 +53,11 @@ def ll_rotate {α : Type} : AvlStructure α → AvlStructure α
 
   Transforms:
 
-      z                    y
-     / \                 /  \
-    T1   y    ==>       z    x
-        / \           / \   / \
-      T2   x         T1 T2 T3 T4
+       z                y
+      / \             /   \
+    T1   y    ==>    z     x
+        / \         / \   / \
+      T2   x       T1 T2 T3 T4
 -/
 def rr_rotate {α : Type} : AvlStructure α → AvlStructure α
 | AvlStructure.node T1 z (AvlStructure.node T2 y T3) =>
