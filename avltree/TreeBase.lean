@@ -13,23 +13,19 @@ inductive BinaryTree where
 deriving Repr
 
 /-- Compute the depth of a binary tree. -/
-@[simp]
 def height : BinaryTree → Nat
   | BinaryTree.nil => 0
   | BinaryTree.node left right => 1 + max (height left) (height right)
 
 /-- Compute the size of a binary tree. -/
-@[simp]
 def size : BinaryTree → Nat
   | BinaryTree.nil => 1
   | BinaryTree.node left right => 1 + size left + size right
 
 
-@[simp]
-theorem height_leaf : height BinaryTree.nil = 0 := rfl
+@[simp] theorem height_leaf : height BinaryTree.nil = 0 := rfl
 
-@[simp]
-theorem size_leaf : size BinaryTree.nil = 1 := rfl
+@[simp] theorem size_leaf : size BinaryTree.nil = 1 := rfl
 
 /--
 Retrieve the left child of a binary tree.
@@ -48,8 +44,7 @@ def rightChild : BinaryTree → BinaryTree
 /--
 Check if a binary tree is a leaf.
 -/
-@[simp]
-def isLeaf : BinaryTree → Bool
+@[simp] def isLeaf : BinaryTree → Bool
   | BinaryTree.nil => true
   | BinaryTree.node _ _ => false
 
