@@ -53,7 +53,6 @@ def isLeaf : BinaryTree → Bool
   | BinaryTree.nil => true
   | BinaryTree.node _ _ => false
 
-@[simp]
 theorem size_node_leaf : ∀ node, isLeaf node → size node = 1 := by
   intro node
   cases node
@@ -62,14 +61,13 @@ theorem size_node_leaf : ∀ node, isLeaf node → size node = 1 := by
   · intro h
     contradiction
 
-@[simp]
 theorem size_node_non_leaf : ∀ node, ¬ isLeaf node → size node = 1 + size (leftChild node) + size (rightChild node) := by
   intro node
   cases node
   · intro h
     contradiction
   · intro h
-    exact rfl
+    rfl
 
 
 end TreeBase_n
