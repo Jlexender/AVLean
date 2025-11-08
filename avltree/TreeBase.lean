@@ -1,5 +1,4 @@
-
-namespace BinaryTree_n
+namespace TreeBase_n
 
 /-- Binary Tree Definition
 
@@ -9,47 +8,52 @@ L   R
 
 --/
 inductive BinaryTree where
-  | leaf : BinaryTree
+  | nil : BinaryTree
   | node : BinaryTree → Nat → BinaryTree → BinaryTree
-
+deriving Repr
 
 /-- Compute the depth of a binary tree. -/
-def depth : BinaryTree → Nat
-  | BinaryTree.leaf => 0
-  | BinaryTree.node left _ right => 1 + max (depth left) (depth right)
+@[simp]
+def height : BinaryTree → Nat
+  | BinaryTree.nil => 0
+  | BinaryTree.node left _ right => 1 + max (height left) (height right)
 
 /-- Compute the size of a binary tree. -/
+@[simp]
 def size : BinaryTree → Nat
-  | BinaryTree.leaf => 1
+  | BinaryTree.nil => 1
   | BinaryTree.node left _ right => 1 + size left + size right
 
-@[simp]
-theorem depth_leaf : depth BinaryTree.leaf = 0 := rfl
 
 @[simp]
-theorem size_leaf : size BinaryTree.leaf = 1 := rfl
+theorem height_leaf : height BinaryTree.nil = 0 := rfl
+
+@[simp]
+theorem size_leaf : size BinaryTree.nil = 1 := rfl
 
 /--
 Retrieve the left child of a binary tree.
 -/
 def leftChild : BinaryTree → BinaryTree
-  | BinaryTree.leaf => BinaryTree.leaf
+  | BinaryTree.nil => BinaryTree.nil
   | BinaryTree.node left _ _ => left
 
 /--
 Retrieve the right child of a binary tree.
 -/
 def rightChild : BinaryTree → BinaryTree
-  | BinaryTree.leaf => BinaryTree.leaf
+  | BinaryTree.nil => BinaryTree.nil
   | BinaryTree.node _ _ right => right
 
 /--
 Check if a binary tree is a leaf.
 -/
+@[simp]
 def isLeaf : BinaryTree → Bool
-  | BinaryTree.leaf => true
+  | BinaryTree.nil => true
   | BinaryTree.node _ _ _ => false
 
+@[simp]
 theorem size_node_leaf : ∀ node, isLeaf node → size node = 1 := by
   intro node
   cases node
@@ -58,6 +62,7 @@ theorem size_node_leaf : ∀ node, isLeaf node → size node = 1 := by
   · intro h
     contradiction
 
+@[simp]
 theorem size_node_non_leaf : ∀ node, ¬ isLeaf node → size node = 1 + size (leftChild node) + size (rightChild node) := by
   intro node
   cases node
@@ -66,4 +71,24 @@ theorem size_node_non_leaf : ∀ node, ¬ isLeaf node → size node = 1 + size (
   · intro h
     exact rfl
 
-end BinaryTree_n
+
+/--
+Compute the balance factor of a binary tree.
+-/
+@[simp]
+def balanceFactor : BinaryTree → Int
+  | BinaryTree.nil => 0
+  | BinaryTree.node left _ right => Int.ofNat (height left) - Int.ofNat (height right)
+
+/--
+Check if a binary tree is balanced.
+-/
+@[simp]
+def isBalanced : BinaryTree → Bool
+  | BinaryTree.nil => true
+  | BinaryTree.node left _ right =>
+    let bf := balanceFactor (BinaryTree.node left 0 right)
+    bf ≥ -1 ∧ bf ≤ 1 ∧ isBalanced left ∧ isBalanced right
+
+
+end TreeBase_n
