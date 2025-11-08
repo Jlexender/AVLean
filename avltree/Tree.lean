@@ -1,27 +1,51 @@
 
-/--
-  A binary tree is a tree data structure in which each node has at most two children,
-  which are referred to as the left child and the right child.
--/
-inductive BinaryTree (α : Type) where
-  | leaf : BinaryTree α
-  | node (left : BinaryTree α) (right : BinaryTree α)
+namespace BinaryTree_n
 
-/--
-  By definition, the depth of a binary tree is the number
-  of edges on the longest path from the root to a leaf.
--/
-def depth (tree : BinaryTree α) : Nat :=
-  match tree with
-  | .leaf => 0
-  | .node l r => 1 + max (depth l) (depth r)
+/-- Binary Tree Definition
+
+  X
+ / \
+X   X
+
+--/
+inductive BinaryTree where
+  | leaf : BinaryTree
+  | node : BinaryTree → Nat → BinaryTree → BinaryTree
 
 
-/--
-  By definition, a binary tree is balanced if the height of
-  the left and right subtrees of any node differ by at most 1.
+/-- Compute the depth of a binary tree. -/
+def depth : BinaryTree → Nat
+  | BinaryTree.leaf => 0
+  | BinaryTree.node left _ right => 1 + max (depth left) (depth right)
+
+/-- Compute the size of a binary tree. -/
+def size : BinaryTree → Nat
+  | BinaryTree.leaf => 1
+  | BinaryTree.node left _ right => 1 + size left + size right
+
+
+/-- Example binary tree.
+
+  2
+ / \
+1   3
+
 -/
-def isBalanced (tree : BinaryTree α) : Bool :=
-  match tree with
-  | .leaf => true
-  | .node l r => Int.natAbs (depth l - depth r) <= 1
+def exampleTree : BinaryTree :=
+  BinaryTree.node
+    (BinaryTree.node BinaryTree.leaf 1 BinaryTree.leaf)
+    2
+    (BinaryTree.node BinaryTree.leaf 3 BinaryTree.leaf)
+
+#eval depth exampleTree
+#eval size exampleTree
+
+
+@[simp]
+theorem depth_leaf : depth BinaryTree.leaf = 0 := rfl
+
+@[simp]
+theorem size_leaf : size BinaryTree.leaf = 1 := rfl
+
+
+end BinaryTree_n
