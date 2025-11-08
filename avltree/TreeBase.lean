@@ -9,20 +9,20 @@ L   R
 --/
 inductive BinaryTree where
   | nil : BinaryTree
-  | node : BinaryTree → Nat → BinaryTree → BinaryTree
+  | node : BinaryTree → BinaryTree → BinaryTree
 deriving Repr
 
 /-- Compute the depth of a binary tree. -/
 @[simp]
 def height : BinaryTree → Nat
   | BinaryTree.nil => 0
-  | BinaryTree.node left _ right => 1 + max (height left) (height right)
+  | BinaryTree.node left right => 1 + max (height left) (height right)
 
 /-- Compute the size of a binary tree. -/
 @[simp]
 def size : BinaryTree → Nat
   | BinaryTree.nil => 1
-  | BinaryTree.node left _ right => 1 + size left + size right
+  | BinaryTree.node left right => 1 + size left + size right
 
 
 @[simp]
@@ -36,14 +36,14 @@ Retrieve the left child of a binary tree.
 -/
 def leftChild : BinaryTree → BinaryTree
   | BinaryTree.nil => BinaryTree.nil
-  | BinaryTree.node left _ _ => left
+  | BinaryTree.node left _ => left
 
 /--
 Retrieve the right child of a binary tree.
 -/
 def rightChild : BinaryTree → BinaryTree
   | BinaryTree.nil => BinaryTree.nil
-  | BinaryTree.node _ _ right => right
+  | BinaryTree.node _ right => right
 
 /--
 Check if a binary tree is a leaf.
@@ -51,7 +51,7 @@ Check if a binary tree is a leaf.
 @[simp]
 def isLeaf : BinaryTree → Bool
   | BinaryTree.nil => true
-  | BinaryTree.node _ _ _ => false
+  | BinaryTree.node _ _ => false
 
 @[simp]
 theorem size_node_leaf : ∀ node, isLeaf node → size node = 1 := by
@@ -70,25 +70,6 @@ theorem size_node_non_leaf : ∀ node, ¬ isLeaf node → size node = 1 + size (
     contradiction
   · intro h
     exact rfl
-
-
-/--
-Compute the balance factor of a binary tree.
--/
-@[simp]
-def balanceFactor : BinaryTree → Int
-  | BinaryTree.nil => 0
-  | BinaryTree.node left _ right => Int.ofNat (height left) - Int.ofNat (height right)
-
-/--
-Check if a binary tree is balanced.
--/
-@[simp]
-def isBalanced : BinaryTree → Bool
-  | BinaryTree.nil => true
-  | BinaryTree.node left _ right =>
-    let bf := balanceFactor (BinaryTree.node left 0 right)
-    bf ≥ -1 ∧ bf ≤ 1 ∧ isBalanced left ∧ isBalanced right
 
 
 end TreeBase_n
