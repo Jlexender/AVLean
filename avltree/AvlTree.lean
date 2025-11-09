@@ -2,7 +2,7 @@
 namespace AVL
 
 /--
-AVL Tree structure.
+AVL Tree structure. No duplicates allowed.
 -/
 inductive AvlStructure (α : Type) : Type
 | nil : AvlStructure α
@@ -29,7 +29,7 @@ def balanceFactor {α : Type} : AvlStructure α → Int
     Int.ofNat (height left) - Int.ofNat (height right)
 
 
-namespace Rotations
+namespace Auxiliary
 
 /--
   Left-left rotation. If not possible, leaves the tree unchanged.
@@ -101,13 +101,100 @@ def rl_rotate {α : Type} : AvlStructure α → AvlStructure α
     AvlStructure.node (AvlStructure.node T1 z T2) x (AvlStructure.node T3 y T4)
 | t => t
 
-end Rotations
+end Auxiliary
 
 namespace Operations
-/-
-  AVL Tree Operations.
-  Insertion and deletion, with balancing via rotations.
+
+/--
+  Balancing operation to restore AVL property.
 -/
+def balance {α : Type} (t : AvlStructure α) : AvlStructure α :=
+  let bf := balanceFactor t
+  if bf > 1 then
+    -- Left heavy
+    match t with
+    | AvlStructure.node left _ _ =>
+        if balanceFactor left >= 0 then
+          Auxiliary.ll_rotate t
+        else
+          Auxiliary.lr_rotate t
+    | _ => t
+  else if bf < -1 then
+    -- Right heavy
+    match t with
+    | AvlStructure.node _ _ right =>
+        if balanceFactor right <= 0 then
+          Auxiliary.rr_rotate t
+        else
+          Auxiliary.rl_rotate t
+    | _ => t
+  else
+    t
+
+
+/--
+  Search for a value in the AVL tree.
+-/
+def search {α : Type} [Ord α] (v : α) (t : AvlStructure α) : Bool :=
+  match t with
+  | AvlStructure.nil => false
+  | AvlStructure.node left x right =>
+      match compare v x with
+      | Ordering.eq => true
+      | Ordering.lt => search v left
+      | Ordering.gt => search v right
+
+
+/--
+  Insert a value into the AVL tree and balance it.
+-/
+def insert {α : Type} [Ord α] (v : α) (t : AvlStructure α) : AvlStructure α :=
+  match t with
+  | AvlStructure.nil => AvlStructure.node AvlStructure.nil v AvlStructure.nil
+  | AvlStructure.node left x right =>
+      match compare v x with
+      | Ordering.eq => t
+      | Ordering.lt =>
+          let newLeft := insert v left
+          balance (AvlStructure.node newLeft x right)
+      | Ordering.gt =>
+          let newRight := insert v right
+          balance (AvlStructure.node left x newRight)
+
+/--
+  Find the minimum value in the AVL tree.
+-/
+def findMin {α : Type} (t : AvlStructure α) : Option α :=
+  match t with
+  | AvlStructure.nil => none
+  | AvlStructure.node AvlStructure.nil x _ => some x
+  | AvlStructure.node left _ _ => findMin left
+
+/--
+  Delete a value from the AVL tree and balance it.
+-/
+def delete {α : Type} [Ord α] (v : α) (t : AvlStructure α) : AvlStructure α :=
+  match t with
+  | AvlStructure.nil => AvlStructure.nil
+  | AvlStructure.node left x right =>
+      match compare v x with
+      | Ordering.lt =>
+          let newLeft := delete v left
+          balance (AvlStructure.node newLeft x right)
+      | Ordering.gt =>
+          let newRight := delete v right
+          balance (AvlStructure.node left x newRight)
+      | Ordering.eq =>
+          match right with
+          | AvlStructure.nil => left
+          | _ =>
+              match findMin right with
+              | none => left
+              | some minRight =>
+                  let newRight := delete minRight right
+                  balance (AvlStructure.node left minRight newRight)
+
+
 
 end Operations
 

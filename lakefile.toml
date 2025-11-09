@@ -6,6 +6,7 @@ lintDriver = "batteries/runLinter"
 [[lean_lib]]
 name = "avltree"
 
+
 [[require]]
 name = "batteries"
 scope = "leanprover-community"
