@@ -1,10 +1,13 @@
-name = "AVLean"
+name = "avltree"
 version = "0.1.0"
-defaultTargets = ["avlean"]
+defaultTargets = ["avltree"]
+lintDriver = "batteries/runLinter"
 
 [[lean_lib]]
-name = "AVLean"
+name = "avltree"
 
-[[lean_exe]]
-name = "avlean"
-root = "Main"
+
+[[require]]
+name = "batteries"
+scope = "leanprover-community"
+rev = "main"
