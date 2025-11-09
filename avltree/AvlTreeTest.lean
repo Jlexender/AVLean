@@ -1,66 +1,34 @@
 import avltree.AvlTree
 
 namespace AVL.Test
+
 open AVL
 open Operations
 
-def insertList {α : Type} [Ord α] (xs : List α) : AvlStructure α :=
+def AvlInvariantBool : AvlStructure Int → Bool
+| AvlStructure.nil => true
+| AvlStructure.node l _ r =>
+    let bf := balanceFactor (AvlStructure.node l 0 r)
+    bf ≥ -1 && bf ≤ 1 && AvlInvariantBool l && AvlInvariantBool r
+
+def assertInvariant (t : AvlStructure Int) : Bool :=
+  if AvlInvariantBool t then
+    true
+  else
+    panic! "AVL invariant violated!"
+
+def insertList (xs : List Int) : AvlStructure Int :=
   xs.foldl (fun t v => insert v t) AvlStructure.nil
 
-def invHolds {α} (t : AvlStructure α) : Bool :=
-  match AvlInvariant t with
-  | True => true
+#eval assertInvariant (insertList [10,5,15,3,7])
+#eval assertInvariant (insertList [10,20,30])
+#eval assertInvariant (insertList [30,20,10])
+#eval assertInvariant (insertList [30,10,20])
+#eval assertInvariant (insertList [10,30,20])
+#eval assertInvariant (insertList [10,5,15,12] |> fun t => delete 12 t)
 
-example : True :=
-  have := insert 10 AvlStructure.nil
-  True.intro
-
-example : True :=
-  let t := insertList [10,5,15,3,7]
-  have : search 7 t = true := rfl -- test structure ok
-  True.intro
-
-example : True :=
-  let t := insertList [10,20,30]   -- RR rotation expected
-  have := invHolds t
-  trivial
-
-example : True :=
-  let t := insertList [30,20,10]   -- LL rotation expected
-  have := invHolds t
-  trivial
-
-example : True :=
-  let t := insertList [30,10,20]   -- LR rotation
-  have := invHolds t
-  trivial
-
-example : True :=
-  let t := insertList [10,30,20]   -- RL rotation
-  have := invHolds t
-  trivial
-
-example : True :=
-  let t := insertList [10,5,15,12]
-  let t2 := delete 12 t
-  have := invHolds t2
-  trivial
-
-example : True :=
-  let t := insertList [20,10,30,5,15,25,35]
-  let t2 := delete 20 t
-  have := invHolds t2
-  trivial
-
-example : True :=
-  let t := insertList (List.range 20)
-  have := invHolds t
-  trivial
-
-example : True :=
-  let t := insertList (List.range 20)
-  let t2 := (List.range 20).foldl (fun acc x => delete x acc) t
-  have := invHolds t2
-  trivial
+#eval let t := insertList ((List.range 20).map Int.ofNat)
+      let t2 := ((List.range 20).map Int.ofNat).foldl (fun acc x => delete x acc) t
+      assertInvariant t2
 
 end AVL.Test

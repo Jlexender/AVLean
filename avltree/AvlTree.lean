@@ -2,7 +2,7 @@
 namespace AVL
 
 /--
-AVL Tree structure. No duplicates allowed.
+AVL Tree structure. No duplicates allowed in this implementation.
 -/
 inductive AvlStructure (α : Type) : Type
 | nil : AvlStructure α
@@ -207,10 +207,5 @@ def AvlInvariant {α : Type} (t : AvlStructure α) : Prop :=
   | AvlStructure.node left _ right =>
       let bf := balanceFactor t
       bf ≥ -1 ∧ bf ≤ 1 ∧ AvlInvariant left ∧ AvlInvariant right
-
-
-theorem avl_invariant_proof : ∀ {α : Type} (t : AvlStructure α), AvlInvariant t → True := by
-  sorry
-
 
 end AVL
