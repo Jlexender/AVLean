@@ -4,6 +4,7 @@ open BinTree
 
 namespace BinSearchTree
 
+@[simp]
 def is_bst : BinTree → Prop
   | .empty       => True
   | .node v l r  =>
@@ -95,6 +96,7 @@ def rotate_right (t : BinSearchTree) : BinSearchTree :=
               let new_tree := .node lv ll (.node v lr r)
               .mk new_tree (by admit)
 
+@[simp]
 def balance_factor (t : BinTree) : Int :=
   match t with
   | .empty       => 0

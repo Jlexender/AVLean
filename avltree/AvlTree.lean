@@ -6,6 +6,7 @@ open BinSearchTree
 
 namespace AvlTree
 
+@[simp]
 def is_avl (t : BinTree) : Prop :=
   is_bst t ∧
   match t with
