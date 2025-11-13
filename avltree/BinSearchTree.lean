@@ -80,7 +80,7 @@ def rotate_left (t : BinSearchTree) : BinSearchTree :=
           | .node rv rl rr =>
               let new_tree := .node rv (.node v l rl) rr
               .mk new_tree ( by
-
+                  admit
               )
 
 def rotate_right (t : BinSearchTree) : BinSearchTree :=
