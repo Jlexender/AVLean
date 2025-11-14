@@ -7,16 +7,16 @@ open BinSearchTree
 namespace AvlTree
 
 @[simp]
-def is_avl (t : BinTree) : Prop :=
-  is_bst t ∧
-  match t with
-  | .empty       => True
-  | .node _ l r  =>
-      is_avl l ∧
-      is_avl r ∧
-      Int.natAbs (balance_factor t) ≤ 1
+def is_avl (tree : BinTree) : Prop :=
+  is_bst tree ∧
+  match tree with
+  | .empty                    => True
+  | .node _ left right        =>
+      is_avl left ∧
+      is_avl right ∧
+      Int.natAbs (balance_factor tree) ≤ 1
 
 inductive AvlTree : Type
-  | mk : (t : BinTree) → is_avl t → AvlTree
+  | mk : (tree : BinTree) → is_avl tree → AvlTree
 
 end AvlTree
