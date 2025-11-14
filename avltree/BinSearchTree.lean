@@ -43,7 +43,7 @@ def insert (newValue : Nat) : BinSearchTree → BinSearchTree
             else
               .node value left (insert_aux right)
       let updatedTree := insert_aux tree
-      .mk updatedTree (by admit)
+      .mk updatedTree (by sorry)
 
 def remove (targetValue : Nat) : BinSearchTree → BinSearchTree
   | .mk tree proof =>
@@ -68,7 +68,7 @@ def remove (targetValue : Nat) : BinSearchTree → BinSearchTree
             else
               .node value left (remove_aux right)
       let updatedTree := remove_aux tree
-      .mk updatedTree (by admit)
+      .mk updatedTree (by sorry)
 
 def rotate_left (bst : BinSearchTree) : BinSearchTree :=
   match bst with
@@ -80,7 +80,7 @@ def rotate_left (bst : BinSearchTree) : BinSearchTree :=
           | .empty => bst
           | .node rightValue rightLeft rightRight =>
               let rotatedTree := .node rightValue (.node value left rightLeft) rightRight
-              .mk rotatedTree (by admit)
+              .mk rotatedTree (by sorry)
 
 def rotate_right (bst : BinSearchTree) : BinSearchTree :=
   match bst with
@@ -92,7 +92,7 @@ def rotate_right (bst : BinSearchTree) : BinSearchTree :=
           | .empty => bst
           | .node leftValue leftLeft leftRight =>
               let rotatedTree := .node leftValue leftLeft (.node value leftRight right)
-              .mk rotatedTree (by admit)
+              .mk rotatedTree (by sorry)
 
 @[simp]
 def balance_factor (tree : BinTree) : Int :=
