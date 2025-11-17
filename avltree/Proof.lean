@@ -124,16 +124,18 @@ theorem insert_aux_preserves_bst (v : Nat) (t : BinTree) :
   | leaf =>
     intro h_in h_bst
     -- inserting into a leaf yields node .leaf v .leaf, and h_in provides the two bounds
-    simp [insert_aux]
-    cases h_in with
-    | intro h_lo h_hi =>
-      constructor
-      · exact h_lo
-      constructor
-      · exact h_hi
-      constructor
-      · assumption
-      · assumption
+    simp [insert_aux, is_bst]
+    trivial
+
+    -- cases h_in with
+    -- | intro h_lo h_hi =>
+    --   constructor
+    --   · exact h_lo
+    --   constructor
+    --   · exact h_hi
+    --   constructor
+    --   · assumption
+    --   · assumption
 
   | node l val r ih_l ih_r =>
     intro h_in h_bst
@@ -186,7 +188,6 @@ theorem insert_aux_preserves_bst (v : Nat) (t : BinTree) :
       · exact h_br
 
 
-
 def insert_bst (v : Nat) : BinSearchTree → BinSearchTree
   | .mk t h =>
     .mk (insert_aux v t) (
@@ -212,3 +213,101 @@ def find_aux : Nat → BinTree → Bool
 
 def find_bst (v : Nat) : BinSearchTree → Bool
   | .mk t _ => find_aux v t
+
+
+def rot_right : BinTree → BinTree
+  | .node (.node l1 v1 r1) v2 r2 =>
+    .node l1 v1 (.node r1 v2 r2)
+  | t => t  -- no rotation possible
+
+def rot_left : BinTree → BinTree
+  | .node l1 v1 (.node l2 v2 r2) =>
+    .node (.node l1 v1 l2) v2 r2
+  | t => t  -- no rotation possible
+
+theorem rot_right_preserves_bst (t : BinTree) :
+  ∀ minopt maxopt,
+    is_bst t minopt maxopt →
+    is_bst (rot_right t) minopt maxopt := by
+  intro minopt maxopt h_bst
+  cases t with
+  | leaf => trivial
+  | node l2 v2 r2 =>
+    cases l2 with
+    | leaf =>
+      -- rotation on node with leaf left child yields same tree, so bst property holds trivially
+      simp [rot_right]
+      exact h_bst
+    | node l1 v1 r1 =>
+      -- now we have t = node (node l1 v1 r1) v2 r2
+      -- need to show is_bst (node l1 v1 (node r1 v2 r2)) minopt maxopt
+      simp [rot_right]
+      -- break apart h_bst for t
+      rcases h_bst with ⟨h_lo, h_rest⟩
+      rcases h_rest with ⟨h_hi, ⟨h_bl, h_br⟩⟩
+      -- break apart h_bl for left subtree
+      rcases h_bl with ⟨h_l1_lo, h_l1_rest⟩
+      rcases h_l1_rest with ⟨h_l1_hi, ⟨h_bl1, h_br1⟩⟩
+      constructor
+      · exact h_l1_lo
+      constructor
+      · -- need to show v1 < maxopt
+        cases maxopt with
+        | none => trivial
+        | some M =>
+          -- from h_hi: v2 < M, and from h_l1_hi: v1 < v2, so v1 < M
+          have h_v2_lt_M : v2 < M := h_hi
+          have h_v1_lt_v2 : v1 < v2 := h_l1_hi
+          omega
+      constructor
+      · -- need is_bst l1 minopt (some v1)
+        exact h_bl1
+      · -- need is_bst (node r1 v2 r2) (some v1) maxopt
+        constructor
+        · -- need v2 > v1
+          exact h_l1_hi
+        · trivial
+
+
+theorem rot_left_preserves_bst (t : BinTree) :
+  ∀ minopt maxopt,
+    is_bst t minopt maxopt →
+    is_bst (rot_left t) minopt maxopt := by
+  intro minopt maxopt h_bst
+  cases t with
+  | leaf => trivial
+  | node l1 v1 r1 =>
+    cases r1 with
+    | leaf =>
+      -- rotation on node with leaf right child yields same tree, so bst property holds trivially
+      simp [rot_left]
+      exact h_bst
+    | node l2 v2 r2 =>
+      -- now we have t = node l1 v1 (node l2 v2 r2)
+      -- need to show is_bst (node (node l1 v1 l2) v2 r2) minopt maxopt
+      simp [rot_left]
+      -- break apart h_bst for t
+      rcases h_bst with ⟨h_lo, h_rest⟩
+      rcases h_rest with ⟨h_hi, ⟨h_bl, h_br⟩⟩
+      -- break apart h_br for right subtree
+      rcases h_br with ⟨h_l2_lo, h_l2_rest⟩
+      rcases h_l2_rest with ⟨h_l2_hi, ⟨h_bl2, h_br2⟩⟩
+      constructor
+      · grind
+      · trivial
+
+
+
+def rot_right_bst : BinSearchTree → BinSearchTree
+  | .mk t h => .mk (rot_right t) (
+    by
+      apply rot_right_preserves_bst t none none
+      exact h
+  )
+
+def rot_left_bst : BinSearchTree → BinSearchTree
+  | .mk t h => .mk (rot_left t) (
+    by
+      apply rot_left_preserves_bst t none none
+      exact h
+  )
